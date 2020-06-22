@@ -1,34 +1,51 @@
 <template>
     <div class="hello">
         <p>Hiiii</p>
-        <el-button
-                @click="getReviewList"
 
-        />
+        <ReviewItem v-for="review of m" :key="review.id" :review-item="review"/>
+
     </div>
 </template>
 
 <script lang="ts">
     import {Component, Prop, Vue} from 'vue-property-decorator';
-    import th from "element-ui/src/locale/lang/th";
+    import ReviewItem from '@/components/review/ReviewItem.vue'
 
-    interface ListItem {
+
+    interface ListItemI {
+        authorName: string;
+        createdAt: string;
         id: number;
-        author_name: string;
         text: string;
-        created_at: string;
     }
 
+    class ListItem implements ListItemI {
+        authorName: string;
+        createdAt: string;
+        id: number;
+        text: string;
 
-    @Component
+        constructor(authorName: string, createdAt: string, id: number, text: string) {
+            this.authorName = authorName;
+            this.createdAt = createdAt;
+            this.id = id;
+            this.text = text;
+        }
+    }
+
+    @Component({
+        components: {
+            ReviewItem
+        }
+    })
     export default class ReviewList extends Vue {
-        m: any = [];
+        m: ListItem[] = [];
 
         created() {
-            // this.getReviewList()
+            this.getReviewList()
         }
 
-        ajaxGet(url: string, callback: any): object {
+        ajaxGet(url: string, callback: any): void {
             this.$http.get(url)
                 .then(response => {
                     callback(response.data)
@@ -39,13 +56,18 @@
             this.loadReviewList()
         }
 
-        newList(data: any): void {
+        newList(data: any[]): void {
             console.log('newList', data)
-            this.m = data
+            data.forEach(value => {
+                const authorName: string = value['author_name']
+                const createdAt: string = value['created_at']
+                const id: number = value['id']
+                const text: string = value['text']
+                this.m.push(new ListItem(authorName, createdAt, id, text))
+            })
         }
 
         loadReviewList(): void {
-            console.log(123)
             this.ajaxGet('reviews', this.newList)
         }
 
