@@ -7,7 +7,7 @@ app_name = 'booking-api'
 
 
 router = routers.DefaultRouter()
-router.register('bookings', PostViewSet, basename='bookings')
+router.register('reviews', PostViewSet, basename='reviews')
 
 urlpatterns = [
     # path('bookmark/<int:pk>', bookmark_post, name='bookmark'),
