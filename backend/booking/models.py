@@ -12,7 +12,7 @@ class Review(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     # TODO ImageField
-    # image = models.ImageField()
+    image = models.ImageField(upload_to='uploads/reviews/%Y/%m/%d/', null=True, blank=True)
 
     class Meta:
         ordering = ('-created_at', )
