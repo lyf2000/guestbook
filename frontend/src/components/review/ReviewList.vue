@@ -2,6 +2,8 @@
     <div class="hello">
         <p>Hiiii</p>
 
+        <ReviewCreateForm/>
+
         <ReviewItem v-for="review of m" :key="review.id" :review-item="review"/>
 
     </div>
@@ -10,6 +12,7 @@
 <script lang="ts">
     import {Component, Prop, Vue} from 'vue-property-decorator';
     import ReviewItem from '@/components/review/ReviewItem.vue'
+    import ReviewCreateForm from '@/components/review/ReviewCreateForm.vue'
 
 
     interface ListItemI {
@@ -35,7 +38,7 @@
 
     @Component({
         components: {
-            ReviewItem
+            ReviewItem, ReviewCreateForm
         }
     })
     export default class ReviewList extends Vue {
@@ -75,7 +78,6 @@
     }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
 
