@@ -20,6 +20,7 @@
         createdAt: string;
         id: number;
         text: string;
+        image: string;
     }
 
     class ListItem implements ListItemI {
@@ -27,12 +28,14 @@
         createdAt: string;
         id: number;
         text: string;
+        image: string;
 
-        constructor(authorName: string, createdAt: string, id: number, text: string) {
+        constructor(authorName: string, createdAt: string, id: number, text: string, image: string) {
             this.authorName = authorName;
             this.createdAt = createdAt;
             this.id = id;
             this.text = text;
+            this.image = image;
         }
     }
 
@@ -66,7 +69,8 @@
                 const createdAt: string = value['created_at']
                 const id: number = value['id']
                 const text: string = value['text']
-                this.m.push(new ListItem(authorName, createdAt, id, text))
+                const image: string = value['image']
+                this.m.push(new ListItem(authorName, createdAt, id, text, image))
             })
         }
 

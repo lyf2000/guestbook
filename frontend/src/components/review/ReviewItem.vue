@@ -1,12 +1,13 @@
 <template>
     <div class="reiewitem">
         <el-row>
-            <el-col offset="4" span="16">
-                <el-card :body-style="{ padding: '0px' }">
-                    <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
+            <el-col offset="8" span="8">
+                <el-card class="cardd"  :body-style="{ padding: '0px' }">
+
+                    <img v-if="reviewItem.image" :src="reviewItem.image"
                          class="image">
                     <div style="padding: 14px;">
-                        <span>{{reviewItem.id}}</span>
+                        <span>{{reviewItem.authorName}} ({{reviewItem.createdAt}})</span>
                         <div class="bottom clearfix">
                             <h4>{{reviewItem.text}}</h4>
                         </div>
@@ -25,6 +26,7 @@
         createdAt: string;
         id: number;
         text: string;
+        image: string;
     }
 
     class ListItem implements ListItemI {
@@ -32,12 +34,14 @@
         createdAt: string;
         id: number;
         text: string;
+        image: string;
 
-        constructor(authorName: string, createdAt: string, id: number, text: string) {
+        constructor(authorName: string, createdAt: string, id: number, text: string, image: string) {
             this.authorName = authorName;
             this.createdAt = createdAt;
             this.id = id;
             this.text = text;
+            this.image = image;
         }
     }
 
@@ -68,7 +72,8 @@
     }
 
     .image {
-        width: auto;
+        /*width: auto;*/
+        width: 100%;
         margin-left: auto;
         margin-right: auto;
         display: block;
@@ -84,4 +89,7 @@
         clear: both
     }
 
+    .cardd {
+        margin-bottom: 3%;
+    }
 </style>

@@ -1,9 +1,14 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 
 # Create your models here.
 
 
 # TODO validators
+
+def validate_name(value):
+    if len(value) < 5:
+        raise ValidationError(u'Too short')
 
 
 class Review(models.Model):
@@ -16,3 +21,7 @@ class Review(models.Model):
 
     class Meta:
         ordering = ('-created_at', )
+
+    # def save(self, *args, **kwargs):
+    #     validate_name(self.author_name)
+    #     super().save(*args, **kwargs)

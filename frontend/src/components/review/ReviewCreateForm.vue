@@ -8,6 +8,17 @@
             <el-form-item label="Text" prop="text">
                 <el-input type="text" v-model="ruleForm.text" autocomplete="off"></el-input>
             </el-form-item>
+
+
+            <!--            <el-upload-->
+            <!--                    :file-list="ruleForm.image"-->
+            <!--                    ref="upload"-->
+            <!--                    action="."-->
+            <!--                    :auto-upload="false">-->
+            <!--                <el-button slot="trigger" size="small" type="primary">select file</el-button>-->
+            <!--            </el-upload>-->
+
+
             <el-form-item>
                 <el-button type="primary" @click="submitForm('ruleForm')">Submit</el-button>
                 <el-button @click="resetForm('ruleForm')">Reset</el-button>
@@ -20,28 +31,32 @@
 
 <script lang="ts">
     import {Component, Prop, Vue} from 'vue-property-decorator';
+    import fi from "element-ui/src/locale/lang/fi";
 
     interface RuleFormI {
         name: string;
         text: string;
+        image: any;
     }
 
     class RuleForm implements RuleFormI {
         name: string;
         text: string;
+        image: any;
 
-        constructor(name: string, text: string) {
+        constructor(name: string, text: string, image: any) {
             this.name = name;
             this.text = text;
+            this.image = image;
         }
     }
+
 
     @Component
     export default class ReviewCreateForm extends Vue {
         // @Prop() private msg!: string;
 
-        ruleForm = new RuleForm('', '')
-
+        ruleForm = new RuleForm('', '', '')
         validators = {
             // checkAge: (rule, value, callback) => {
             //     console.log(rule)
@@ -74,8 +89,8 @@
                 if (value === '') {
                     callback(new Error('Please input the name'));
                 } else {
-                    if (value.length < 2 || value.length > 32) {
-                        callback(new Error('[2; 32]'));
+                    if (value.length < 3 || value.length > 32) {
+                        callback(new Error('[3; 32]'));
                     }
                     callback();
                 }
@@ -84,8 +99,8 @@
                 if (value === '') {
                     callback(new Error('Please input the name'));
                 } else {
-                    if (value.length < 18 || value.length > 532) {
-                        callback(new Error('[18; 532]'));
+                    if (value.length < 16 || value.length > 512) {
+                        callback(new Error('[16; 512]'));
                     }
                     callback();
                 }
@@ -100,7 +115,14 @@
             //     }
             // }
         }
+        errorMessage = {
+            'author_name': 'Name',
+            'text': 'Text'
+        }
 
+        submitUpload() {
+            this.$refs.upload.submit();
+        }
 
         resetForm(formName: string) {
             this.$refs[formName].resetFields();
@@ -110,7 +132,8 @@
         submitForm(formName: string) {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    console.log(this.ruleForm)
+                    console.log(this.ruleForm.image)
+                    console.log(typeof this.ruleForm.image)
                     this.createReview()
                 } else {
                     console.log('error submit!!');
@@ -123,17 +146,39 @@
             const formData = new FormData();
             formData.append("text", this.ruleForm.text);
             formData.append("author_name", this.ruleForm.name);
+            formData.append("image", this.ruleForm.image);
+
+            console.log(formData)
 
             this.ajaxPost('reviews/', formData)
                 .then(response => {
-                console.log(response.data)})
+                    console.log(response.data)
+                })
                 .catch(response => {
-                    console.log(response)
+                    console.log('err')
+                    this.getError(response.response)
+
                 })
         }
 
+        getError(response) {
+            const data = response.data
+            let message = '';
+            console.log(data)
+            for (const [key, value] of Object.entries(data)) {
+                message += `${this.errorMessage[key]}: ${value}`
+            }
+
+            alert(message)
+        }
+
         ajaxPost(url: string, data: object) {
-            return this.$http.post(url, data)
+            const d = {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
+            return this.$http.post(url, data, d)
         }
 
 
