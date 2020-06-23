@@ -14,4 +14,5 @@ class Review(models.Model):
     # TODO ImageField
     # image = models.ImageField()
 
-    ordering = ['-created', ]
+    class Meta:
+        ordering = ('-created_at', )
