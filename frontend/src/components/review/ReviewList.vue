@@ -2,9 +2,9 @@
     <div class="hello">
         <p>Hiiii</p>
 
-        <ReviewCreateForm/>
+        <ReviewCreateForm @new-review="newReivew"/>
 
-        <ReviewItem v-for="review of m" :key="review.id" :review-item="review"/>
+        <ReviewItem v-for="review of reviewList" :key="review.id" :review-item="review"/>
 
     </div>
 </template>
@@ -15,7 +15,7 @@
     import ReviewCreateForm from '@/components/review/ReviewCreateForm.vue'
 
 
-    interface ListItemI {
+    interface ReviewI {
         authorName: string;
         createdAt: string;
         id: number;
@@ -23,7 +23,7 @@
         image: string;
     }
 
-    class ListItem implements ListItemI {
+    class Review implements ReviewI {
         authorName: string;
         createdAt: string;
         id: number;
@@ -45,10 +45,14 @@
         }
     })
     export default class ReviewList extends Vue {
-        m: ListItem[] = [];
+        reviewList: Review[] = [];
 
         created() {
             this.getReviewList()
+        }
+
+        newReivew(review: Review) {
+            this.reviewList.unshift(review)
         }
 
         ajaxGet(url: string, callback: any): void {
@@ -70,7 +74,7 @@
                 const id: number = value['id']
                 const text: string = value['text']
                 const image: string = value['image']
-                this.m.push(new ListItem(authorName, createdAt, id, text, image))
+                this.reviewList.push(new Review(authorName, createdAt, id, text, image))
             })
         }
 

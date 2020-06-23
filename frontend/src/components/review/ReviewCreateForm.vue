@@ -30,7 +30,7 @@
 
 
 <script lang="ts">
-    import {Component, Prop, Vue} from 'vue-property-decorator';
+    import {Component, Prop, Vue, Emit} from 'vue-property-decorator';
     import fi from "element-ui/src/locale/lang/fi";
 
     interface RuleFormI {
@@ -51,40 +51,36 @@
         }
     }
 
+    interface ListItemI {
+        authorName: string;
+        createdAt: string;
+        id: number;
+        text: string;
+        image: string;
+    }
+
+    class ListItem implements ListItemI {
+        authorName: string;
+        createdAt: string;
+        id: number;
+        text: string;
+        image: string;
+
+        constructor(authorName: string, createdAt: string, id: number, text: string, image: string) {
+            this.authorName = authorName;
+            this.createdAt = createdAt;
+            this.id = id;
+            this.text = text;
+            this.image = image;
+        }
+    }
+
 
     @Component
     export default class ReviewCreateForm extends Vue {
-        // @Prop() private msg!: string;
 
         ruleForm = new RuleForm('', '', '')
         validators = {
-            // checkAge: (rule, value, callback) => {
-            //     console.log(rule)
-            //     if (!value) {
-            //         return callback(new Error('Please input the age'));
-            //     }
-            //     setTimeout(() => {
-            //         if (!Number.isInteger(value)) {
-            //             callback(new Error('Please input digits'));
-            //         } else {
-            //             if (value < 18) {
-            //                 callback(new Error('Age must be greater than 18'));
-            //             } else {
-            //                 callback();
-            //             }
-            //         }
-            //     }, 200);
-            // },
-            // validatePass: (rule, value, callback) => {
-            //     if (value === '') {
-            //         callback(new Error('Please input the password'));
-            //     } else {
-            //         if (this.ruleForm.checkPass !== '') {
-            //             this.$refs.ruleForm.validateField('checkPass');
-            //         }
-            //         callback();
-            //     }
-            // },
             validateName: (rule: object, value: string, callback: any) => {
                 if (value === '') {
                     callback(new Error('Please input the name'));
@@ -152,7 +148,13 @@
 
             this.ajaxPost('reviews/', formData)
                 .then(response => {
-                    console.log(response.data)
+                    const value = response.data
+                    const authorName: string = value['author_name']
+                    const createdAt: string = value['created_at']
+                    const id: number = value['id']
+                    const text: string = value['text']
+                    const image: string = value['image']
+                    this.$emit('new-review', new ListItem(authorName, createdAt, id, text, image))
                 })
                 .catch(response => {
                     console.log('err')
